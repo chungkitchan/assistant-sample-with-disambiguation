@@ -21,7 +21,8 @@ var ConversationPanel = (function () {
   return {
     init: init,
     inputKeyDown: inputKeyDown,
-    sendMessage: sendMessage
+    sendMessage: sendMessage,
+    sendMessageObject: sendMessageObject
   };
 
   // Initialize the module
@@ -225,6 +226,36 @@ var ConversationPanel = (function () {
     return list;
   }
 
+  function getSuggestions(suggestionsList,preference) {
+    var list = '';
+    var i = 0;
+    if (suggestionsList !== null) {
+      if (preference === 'text') {
+        list = '<ul>';
+        for (i = 0; i < suggestionsList.length; i++) {
+          if (suggestionsList[i].value) {
+            var jsonStr = encodeURIComponent(JSON.stringify(suggestionsList[i].value));
+            list += '<li><div class="options-list" onclick="ConversationPanel.sendMessageObject(\'' +
+                    jsonStr +'\' );" >' + suggestionsList[i].label + '</div></li>';
+          }
+        }
+        list += '</ul>';
+      } else if (preference === 'button') {
+        list = '<br>';
+        for (i = 0; i < suggestionsList.length; i++) {
+          if (suggestionsList[i].value) {
+            var jsonStr = JSON.stringify(suggestionsList[i].value).replace(/"/g,'\\"');
+            var item = '<div class="options-button" onclick="ConversationPanel.sendMessageObject(\''+
+                   JSON.stringify(suggestionsList[i].value).replace(/"/g,'\\"')  +'\' );" >' + 
+                   suggestionsList[i].label + '</div>';
+            list += item;
+          }
+        }
+      }
+    }
+    return list;
+  }
+
   function getResponse(responses, gen) {
     var title = '';
     if (gen.hasOwnProperty('title')) {
@@ -254,6 +285,16 @@ var ConversationPanel = (function () {
       }
 
       var list = getOptions(gen.options, preference);
+      responses.push({
+        type: gen.response_type,
+        innerhtml: title + list
+      });
+    } else if (gen.response_type === 'suggestion') {
+      var preference = 'text';
+      if (gen.hasOwnProperty('preference')) {
+        preference = gen.preference;
+      }
+      var list = getSuggestions(gen.suggestions, preference);
       responses.push({
         type: gen.response_type,
         innerhtml: title + list
@@ -312,10 +353,21 @@ var ConversationPanel = (function () {
     if (latestResponse) {
       context = latestResponse.context;
     }
-
     // Send the user message
     Api.sendRequest(text, context);
   }
+
+  function sendMessageObject(json) {
+    // Retrieve the context from the previous server response
+    var context;
+    var latestResponse = Api.getResponsePayload();
+    if (latestResponse) {
+      context = latestResponse.context;
+    }
+    // Send the user message
+    Api.sendRequest(JSON.parse(decodeURIComponent(json)), context);
+  }
+
 
   // Handles the submission of input
   function inputKeyDown(event, inputBox) {

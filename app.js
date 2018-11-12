@@ -44,11 +44,18 @@ app.post('/api/message', function (req, res) {
   }
   var payload = {
     workspace_id: workspace,
+    alternate_intents: true,
     context: req.body.context || {},
     input: req.body.input || {}
   };
-
-  // Send the input to the assistant service
+  if (req.body.intents) {
+     payload.intents = req.body.intents;
+  } 
+  if (req.body.entities) {
+     payload.entities = req.body.entities;
+  } 
+  
+// Send the input to the assistant service
   assistant.message(payload, function (err, data) {
     if (err) {
       return res.status(err.code || 500).json(err);

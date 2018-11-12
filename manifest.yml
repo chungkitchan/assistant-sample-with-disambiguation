@@ -1,6 +1,12 @@
 applications:
-- name: watson-assistant-simple
+- name: YourAppName
   command: npm start
   path: .
   memory: 256M
   instances: 1
+  env:
+     WORKSPACE_ID: Your-workspace-id
+     ASSISTANT_USERNAME: Your-assistant-username
+     ASSISTANT_PASSWORD: Your-assistant-password
+     ASSISTANT_VERSION: v1
+     ASSISTANT_VERSION_DATE: 2017-05-26

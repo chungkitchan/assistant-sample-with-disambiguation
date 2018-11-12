@@ -26,18 +26,22 @@ var Api = (function() {
   };
 
   // Send a message request to the server
-  function sendRequest(text, context) {
+  function sendRequest(value, context) {
     // Build request payload
     var payloadToWatson = {};
-    if (text) {
-      payloadToWatson.input = {
-        text: text
-      };
+     
+    if (typeof value=="string") {
+       text = value;
+       payloadToWatson.input = {
+         text: text
+       };
+    }  else if (typeof value=="object") {
+       payloadToWatson = value;
     }
+
     if (context) {
       payloadToWatson.context = context;
     }
-
     // Built http request
     var http = new XMLHttpRequest();
     http.open('POST', messageEndpoint, true);
