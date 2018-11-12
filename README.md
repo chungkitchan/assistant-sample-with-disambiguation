@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">🚀 Watson Assistant (formerly Conversation) Sample Application</h1>
-<h3 align="center">This is modified from [Watson Assistant Sample Application](https://github.com/watson-developer-cloud/assistant-simple) with added handling of disambiguation. To view the application with the payload visit debug.html 
+<h3 align="center">This is modified from <a href="https://github.com/watson-developer-cloud/assistant-simple">Watson Assistant Sample Application</a> with added handling of disambiguation. To view the application with the payload visit debug.html 
 
 <h3 align="center">This Node.js app demonstrates the Watson Assistant service in a simple interface engaging in a series of simple simulated banking tasks.</h3>
 <p align="center">
